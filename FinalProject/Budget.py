@@ -85,9 +85,14 @@ tracker = BudgetTracker()
 
 # Add daily income
 tracker.add_income("Territorial Savings Bank", 356.05) # Start Of Python Project
+tracker.add_income("Tips GEN BBQ", 25.00)
+tracker.add_income("Tips GEN BBQ", 35.00)
+
 
 # Add daily expenses
-tracker.add_expense("BreakFast 711", 35.00)
+tracker.add_expense("BreakFast 711", 25.00)
+tracker.add_expense("Lunch L&L", 20.00)
+tracker.add_expense("Mcdonalds", 14.50)
 
 # Set savings
 tracker.set_savings(250000.00)
