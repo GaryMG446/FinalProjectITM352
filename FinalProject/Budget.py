@@ -84,15 +84,15 @@ def run_scheduler():
 tracker = BudgetTracker()
 
 # Add daily income
-tracker.add_income("Territorial Savings Bank", 356.05) # Start Of Python Project
-tracker.add_income("Tips GEN BBQ", 25.00)
-tracker.add_income("Tips GEN BBQ", 35.00)
+tracker.add_income("Territorial Savings Bank", 0.00) # Start Of Python Project
+tracker.add_income("Tips Work", 0.00)
+tracker.add_income("Tips Work", 0.00)
 
 
 # Add daily expenses
-tracker.add_expense("BreakFast 711", 25.00)
-tracker.add_expense("Lunch L&L", 20.00)
-tracker.add_expense("Mcdonalds", 14.50)
+tracker.add_expense("BreakFast", 19.95)
+tracker.add_expense("Lunch", 17.75)
+tracker.add_expense("Dinner", 00.00)
 
 # Set savings
 tracker.set_savings(250000.00)
