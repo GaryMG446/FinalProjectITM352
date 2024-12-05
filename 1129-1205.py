@@ -1,7 +1,6 @@
 import datetime
 import pandas as pd
 
-
 # Set the start date
 start_date = datetime.datetime(2024, 11, 29)
 
@@ -28,6 +27,7 @@ def add_event(date, time_slot, event):
 add_event(datetime.datetime(2024, 11, 29), "00:00 - 01:00", "Sleep")
 add_event(datetime.datetime(2024, 11, 29), "01:00 - 02:00", "Sleep")
 add_event(datetime.datetime(2024, 11, 29), "02:00 - 03:00", "Sleep")
+add_event(datetime.datetime(2024, 11, 29), "03:00 - 04:00", "Sleep")
 add_event(datetime.datetime(2024, 11, 29), "03:00 - 04:00", "Sleep")
 add_event(datetime.datetime(2024, 11, 29), "04:00 - 05:00", "Morning Walk")
 add_event(datetime.datetime(2024, 11, 29), "05:00 - 06:00", "Morning Walk")
@@ -194,7 +194,6 @@ add_event(datetime.datetime(2024, 12, 5), "21:00 - 22:00", "Sleep")
 add_event(datetime.datetime(2024, 12, 5), "22:00 - 23:00", "Sleep")
 add_event(datetime.datetime(2024, 12, 5), "23:00 - 24:00", "Sleep")
 
-
 # Function to view the calendar with only scheduled events
 def view_scheduled_events():
     scheduled_events = weekly_calendar.dropna()
@@ -213,8 +212,19 @@ def verify_time_slots():
         for slot in sorted(missing_slots):
             print(slot)
 
+# Function to export the weekly events to an Excel file
+def export_weekly_to_excel():
+    weekly_events = weekly_calendar.dropna().reset_index()
+    file_name = f'weekly_events_{dates[-1].strftime("%Y%m%d")}.xlsx'
+    with pd.ExcelWriter(file_name, engine='xlsxwriter') as writer:
+        weekly_events.to_excel(writer, sheet_name='Events', index=False)
+    print(f"Weekly events exported to {file_name}")
+
 # Verify all time slots are present
 verify_time_slots()
 
 # View the calendar with only scheduled events
 view_scheduled_events()
+
+# Export weekly events to an Excel file
+export_weekly_to_excel()
