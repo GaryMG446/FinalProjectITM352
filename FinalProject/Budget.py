@@ -46,20 +46,28 @@ class BudgetTracker:
         print(f"Balance: ${self.calculate_balance()}")
 
     def monthly_summary(self, year, month):
-        monthly_income = sum(entry["amount"] for entry in self.daily_income if entry["date"].year == year and entry["date"].month == month)
-        monthly_expenses = sum(entry["amount"] for entry in self.daily_expenses if entry["date"].year == year and entry["date"].month == month)
+        monthly_income = [entry for entry in self.daily_income if entry["date"].year == year and entry["date"].month == month]
+        monthly_expenses = [entry for entry in self.daily_expenses if entry["date"].year == year and entry["date"].month == month]
+        
+        monthly_income_total = sum(entry["amount"] for entry in monthly_income)
+        monthly_expenses_total = sum(entry["amount"] for entry in monthly_expenses)
+
         print(f"Monthly Summary for {year}-{month}:")
-        print(f"  Total Income: ${monthly_income}")
-        print(f"  Total Expenses: ${monthly_expenses}")
-        print(f"  Balance: ${monthly_income - monthly_expenses - self.savings}")
+        print(f"  Total Income: ${monthly_income_total}")
+        print(f"  Total Expenses: ${monthly_expenses_total}")
+        print(f"  Balance: ${monthly_income_total - monthly_expenses_total - self.savings}")
 
     def yearly_summary(self, year):
-        yearly_income = sum(entry["amount"] for entry in self.daily_income if entry["date"].year == year)
-        yearly_expenses = sum(entry["amount"] for entry in self.daily_expenses if entry["date"].year == year)
+        yearly_income = [entry for entry in self.daily_income if entry["date"].year == year]
+        yearly_expenses = [entry for entry in self.daily_expenses if entry["date"].year == year]
+
+        yearly_income_total = sum(entry["amount"] for entry in yearly_income)
+        yearly_expenses_total = sum(entry["amount"] for entry in yearly_expenses)
+
         print(f"Yearly Summary for {year}:")
-        print(f"  Total Income: ${yearly_income}")
-        print(f"  Total Expenses: ${yearly_expenses}")
-        print(f"  Balance: ${yearly_income - yearly_expenses - self.savings}")
+        print(f"  Total Income: ${yearly_income_total}")
+        print(f"  Total Expenses: ${yearly_expenses_total}")
+        print(f"  Balance: ${yearly_income_total - yearly_expenses_total - self.savings}")
 
     def export_daily_data_to_excel(self):
         date_str = datetime.datetime.now(self.timezone).strftime('%Y-%m-%d')
@@ -72,8 +80,68 @@ class BudgetTracker:
             expenses_df.to_excel(writer, sheet_name='Expenses', index=False)
         print(f"Daily data exported to daily_budget_{date_str}.xlsx")
 
-def job():
+    def export_monthly_summary_to_excel(self):
+        current_date = datetime.datetime.now(self.timezone)
+        year, month = current_date.year, current_date.month
+
+        monthly_income = [entry for entry in self.daily_income if entry["date"].year == year and entry["date"].month == month]
+        monthly_expenses = [entry for entry in self.daily_expenses if entry["date"].year == year and entry["date"].month == month]
+
+        income_df = pd.DataFrame(monthly_income)
+        expenses_df = pd.DataFrame(monthly_expenses)
+
+        monthly_income_total = sum(entry["amount"] for entry in monthly_income)
+        monthly_expenses_total = sum(entry["amount"] for entry in monthly_expenses)
+
+        # Create a new Excel writer
+        with pd.ExcelWriter(f'monthly_budget_{year}_{month}.xlsx') as writer:
+            income_df.to_excel(writer, sheet_name='Income', index=False)
+            expenses_df.to_excel(writer, sheet_name='Expenses', index=False)
+            
+            # Write totals to a new sheet
+            totals_df = pd.DataFrame({
+                'Category': ['Income', 'Expenses'],
+                'Total': [monthly_income_total, monthly_expenses_total]
+            })
+            totals_df.to_excel(writer, sheet_name='Totals', index=False)
+
+        print(f"Monthly summary exported to monthly_budget_{year}_{month}.xlsx")
+
+    def export_yearly_summary_to_excel(self):
+        current_date = datetime.datetime.now(self.timezone)
+        year = current_date.year
+
+        yearly_income = [entry for entry in self.daily_income if entry["date"].year == year]
+        yearly_expenses = [entry for entry in self.daily_expenses if entry["date"].year == year]
+
+        income_df = pd.DataFrame(yearly_income)
+        expenses_df = pd.DataFrame(yearly_expenses)
+
+        yearly_income_total = sum(entry["amount"] for entry in yearly_income)
+        yearly_expenses_total = sum(entry["amount"] for entry in yearly_expenses)
+
+        # Create a new Excel writer
+        with pd.ExcelWriter(f'yearly_budget_{year}.xlsx') as writer:
+            income_df.to_excel(writer, sheet_name='Income', index=False)
+            expenses_df.to_excel(writer, sheet_name='Expenses', index=False)
+            
+            # Write totals to a new sheet
+            totals_df = pd.DataFrame({
+                'Category': ['Income', 'Expenses'],
+                'Total': [yearly_income_total, yearly_expenses_total]
+            })
+            totals_df.to_excel(writer, sheet_name='Totals', index=False)
+
+        print(f"Yearly summary exported to yearly_budget_{year}.xlsx")
+
+def job_daily():
     tracker.export_daily_data_to_excel()
+
+def job_monthly():
+    tracker.export_monthly_summary_to_excel()
+
+def job_yearly():
+    tracker.export_yearly_summary_to_excel()
 
 def run_scheduler():
     while True:
@@ -84,15 +152,14 @@ def run_scheduler():
 tracker = BudgetTracker()
 
 # Add daily income
-tracker.add_income("Territorial Savings Bank", 0.00) # Start Of Python Project
+tracker.add_income("Territorial Savings Bank", 0.00)  # Start Of Python Project
 tracker.add_income("Tips Work", 0.00)
 tracker.add_income("Tips Work", 0.00)
-
 
 # Add daily expenses
 tracker.add_expense("BreakFast", 19.95)
 tracker.add_expense("Lunch", 17.75)
-tracker.add_expense("Dinner", 00.00)
+tracker.add_expense("Dinner", 0.00)
 
 # Set savings
 tracker.set_savings(250000.00)
@@ -102,9 +169,17 @@ tracker.show_summary()
 
 # Export data immediately for testing
 tracker.export_daily_data_to_excel()
+tracker.export_monthly_summary_to_excel()
+tracker.export_yearly_summary_to_excel()
 
 # Schedule job to export daily data to Excel at the end of each day
-schedule.every().day.at("23:59").do(job)
+schedule.every().day.at("23:59").do(job_daily)
+
+# Schedule job to export monthly data to Excel at the end of each month
+schedule.every().month.at("23:59").do(job_monthly)
+
+# Schedule job to export yearly data to Excel at the end of each year
+schedule.every().year.at("23:59").do(job_yearly)
 
 # Run the scheduler in a separate thread
 scheduler_thread = threading.Thread(target=run_scheduler)
