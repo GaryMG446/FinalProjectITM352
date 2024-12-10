@@ -148,6 +148,24 @@ def run_scheduler():
         schedule.run_pending()
         time.sleep(60)  # wait one minute
 
+def is_last_day_of_month(date):
+    next_day = date + datetime.timedelta(days=1)
+    return next_day.month != date.month
+
+def is_last_day_of_year(date):
+    next_day = date + datetime.timedelta(days=1)
+    return next_day.year != date.year
+
+def job_monthly_check():
+    current_date = datetime.datetime.now(pytz.timezone('Pacific/Honolulu')).date()
+    if is_last_day_of_month(current_date):
+        job_monthly()
+
+def job_yearly_check():
+    current_date = datetime.datetime.now(pytz.timezone('Pacific/Honolulu')).date()
+    if is_last_day_of_year(current_date):
+        job_yearly()
+
 # Example usage
 tracker = BudgetTracker()
 
@@ -175,11 +193,11 @@ tracker.export_yearly_summary_to_excel()
 # Schedule job to export daily data to Excel at the end of each day
 schedule.every().day.at("23:59").do(job_daily)
 
-# Schedule job to export monthly data to Excel at the end of each month
-schedule.every().month.at("23:59").do(job_monthly)
+# Schedule job to check for the last day of the month
+schedule.every().day.at("23:59").do(job_monthly_check)
 
-# Schedule job to export yearly data to Excel at the end of each year
-schedule.every().year.at("23:59").do(job_yearly)
+# Schedule job to check for the last day of the year
+schedule.every().day.at("23:59").do(job_yearly_check)
 
 # Run the scheduler in a separate thread
 scheduler_thread = threading.Thread(target=run_scheduler)
