@@ -30,22 +30,32 @@ def update_clock():
     # Convert UTC time to HST
     now_hst = now_utc.astimezone(hawaii_tz)
     
-    # Format the time as a string
-    formatted_time_hst = now_hst.strftime('%Y-%m-%d %H:%M:%S %Z%z')
+    # Format the time, date, and timezone as strings
+    formatted_time_hst = now_hst.strftime('%I:%M:%S %p')
+    formatted_date_hst = now_hst.strftime('%Y-%m-%d')
+    formatted_tz_hst = now_hst.strftime('%Z %z')
     
-    # Update the label with the current time
-    clock_label.config(text=formatted_time_hst)
+    # Update the labels with the current time, date, and timezone
+    time_label.config(text=formatted_time_hst)
+    date_label.config(text=formatted_date_hst)
+    tz_label.config(text=formatted_tz_hst)
     
     # Schedule the function to update the time after 1 second
-    clock_label.after(1000, update_clock)
+    time_label.after(1000, update_clock)
 
 # Create the main window
 root = tk.Tk()
-root.title("HST Clock")
+root.title("ClockWork")
 
-# Create a label to display the time
-clock_label = tk.Label(root, font=('calibri', 40, 'bold'), background='purple', foreground='white')
-clock_label.pack(anchor='center')
+# Create labels to display the time, date, and timezone
+time_label = tk.Label(root, font=('calibri', 40, 'bold'), background='darkgreen', foreground='gold')
+time_label.pack(anchor='center')
+
+date_label = tk.Label(root, font=('calibri', 20, 'bold'), background='darkgreen', foreground='gold')
+date_label.pack(anchor='center')
+
+tz_label = tk.Label(root, font=('calibri', 15, 'bold'), background='darkgreen', foreground='gold')
+tz_label.pack(anchor='center')
 
 # Add a protocol handler to allow sleep mode when the window is closed
 def on_closing():
@@ -59,3 +69,4 @@ update_clock()
 
 # Run the main event loop
 root.mainloop()
+

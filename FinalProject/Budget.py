@@ -170,13 +170,13 @@ def job_yearly_check():
 tracker = BudgetTracker()
 
 # Add daily income
-tracker.add_income("Territorial Savings Bank", 0.00)  # Start Of Python Project
+tracker.add_income("Territorial Savings Bank", 499.00)  # Start Of Python Project
 tracker.add_income("Tips Work", 0.00)
 tracker.add_income("Tips Work", 0.00)
 
 # Add daily expenses
-tracker.add_expense("BreakFast", 19.95)
-tracker.add_expense("Lunch", 17.75)
+tracker.add_expense("BreakFast", 28.95)
+tracker.add_expense("Lunch", 14.75)
 tracker.add_expense("Dinner", 0.00)
 
 # Set savings

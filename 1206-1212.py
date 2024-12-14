@@ -25,7 +25,7 @@ def add_event(date, time_slot, event):
         print("Invalid date or time slot")
 
 # Add events for the entire day on 11/29/2024
-add_event(datetime.datetime(2024, 12, 6), "00:00 - 01:00", "Sleep")
+add_event(datetime.datetime(2024, 12, ), "00:00 - 01:00", "Sleep")
 add_event(datetime.datetime(2024, 12, 6), "01:00 - 02:00", "Sleep")
 add_event(datetime.datetime(2024, 12, 6), "02:00 - 03:00", "Sleep")
 add_event(datetime.datetime(2024, 12, 6), "03:00 - 04:00", "Sleep")
